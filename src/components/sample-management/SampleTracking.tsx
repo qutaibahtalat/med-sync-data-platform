@@ -1,15 +1,15 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Sample } from "@/types/sample";
-import { Search, Eye, Edit, MapPin } from "lucide-react";
+import { Search, Eye, Edit, MapPin, Printer, Download } from "lucide-react";
 
 const SampleTracking = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedSample, setSelectedSample] = useState<Sample | null>(null);
 
   const mockSamples: Sample[] = [
     {
@@ -115,6 +115,31 @@ const SampleTracking = () => {
     return `${minutes}m ago`;
   };
 
+  const handleUpdateSample = (sampleId: string) => {
+    console.log("Updating sample:", sampleId);
+    // Implementation for updating sample status
+  };
+
+  const handleViewSample = (sample: Sample) => {
+    setSelectedSample(sample);
+    console.log("Viewing sample details:", sample);
+  };
+
+  const handleTrackSample = (sampleId: string) => {
+    console.log("Tracking sample:", sampleId);
+    // Implementation for real-time tracking
+  };
+
+  const handlePrintReport = (sampleId: string) => {
+    console.log("Printing report for sample:", sampleId);
+    window.print();
+  };
+
+  const handleDownloadReport = (sampleId: string) => {
+    console.log("Downloading report for sample:", sampleId);
+    // Generate and download PDF report
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -180,18 +205,50 @@ const SampleTracking = () => {
                   </div>
 
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleTrackSample(sample.id)}
+                    >
                       <MapPin className="w-4 h-4 mr-1" />
                       Track
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleViewSample(sample)}
+                    >
                       <Eye className="w-4 h-4 mr-1" />
                       View
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleUpdateSample(sample.id)}
+                    >
                       <Edit className="w-4 h-4 mr-1" />
                       Update
                     </Button>
+                    {sample.status === "completed" && (
+                      <>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handlePrintReport(sample.id)}
+                        >
+                          <Printer className="w-4 h-4 mr-1" />
+                          Print
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleDownloadReport(sample.id)}
+                        >
+                          <Download className="w-4 h-4 mr-1" />
+                          PDF
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -225,6 +282,58 @@ const SampleTracking = () => {
           </Card>
         ))}
       </div>
+
+      {/* Sample Details Modal */}
+      {selectedSample && (
+        <Card className="fixed inset-0 z-50 bg-white m-4 overflow-auto">
+          <CardHeader>
+            <CardTitle>Sample Details - {selectedSample.id}</CardTitle>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="absolute top-4 right-4"
+              onClick={() => setSelectedSample(null)}
+            >
+              Close
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium">Patient Information</h4>
+                <p>Name: {selectedSample.patientName}</p>
+                <p>ID: {selectedSample.patientId}</p>
+              </div>
+              <div>
+                <h4 className="font-medium">Test Information</h4>
+                <p>Test: {selectedSample.testType.name}</p>
+                <p>Category: {selectedSample.testType.category}</p>
+                <p>Duration: {selectedSample.testType.duration} minutes</p>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-medium">Status Information</h4>
+              <p>Current Status: {selectedSample.status}</p>
+              <p>Priority: {selectedSample.priority}</p>
+              <p>Received: {selectedSample.receivedAt.toLocaleString()}</p>
+              {selectedSample.processedAt && (
+                <p>Processed: {selectedSample.processedAt.toLocaleString()}</p>
+              )}
+              {selectedSample.completedAt && (
+                <p>Completed: {selectedSample.completedAt.toLocaleString()}</p>
+              )}
+            </div>
+
+            {selectedSample.notes && (
+              <div>
+                <h4 className="font-medium">Notes</h4>
+                <p>{selectedSample.notes}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

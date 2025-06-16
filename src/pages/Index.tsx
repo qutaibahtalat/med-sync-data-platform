@@ -1,7 +1,9 @@
 
 import { useState } from "react";
 import { UserRole } from "@/types/user";
-import LandingPage from "@/components/LandingPage";
+import LoginForm from "@/components/auth/LoginForm";
+import SignupForm from "@/components/auth/SignupForm";
+import LicensingPage from "@/components/licensing/LicensingPage";
 import Navigation from "@/components/Navigation";
 import LabTechnicianDashboard from "@/components/dashboards/LabTechnicianDashboard";
 import DoctorDashboard from "@/components/dashboards/DoctorDashboard";
@@ -12,10 +14,12 @@ import SampleIntake from "@/components/sample-management/SampleIntake";
 import SampleTracking from "@/components/sample-management/SampleTracking";
 import ResultEntry from "@/components/results/ResultEntry";
 import ReportGenerator from "@/components/results/ReportGenerator";
+import ReportTemplateBuilder from "@/components/reports/ReportTemplateBuilder";
 import InventoryManagement from "@/components/inventory/InventoryManagement";
 import EquipmentTracking from "@/components/inventory/EquipmentTracking";
 import RequestTest from "@/components/doctor/RequestTest";
 import ReviewResults from "@/components/doctor/ReviewResults";
+import CommissionPage from "@/components/doctor/CommissionPage";
 import BookAppointment from "@/components/patient/BookAppointment";
 import ViewReports from "@/components/patient/ViewReports";
 import NewStudy from "@/components/researcher/NewStudy";
@@ -30,29 +34,42 @@ export type CurrentView =
   | "sample-tracking" 
   | "result-entry" 
   | "report-generator"
+  | "report-templates"
   | "inventory" 
   | "equipment" 
   | "request-test" 
   | "review-results"
+  | "commission"
   | "book-appointment" 
   | "view-reports" 
   | "new-study" 
   | "study-data"
   | "settings" 
-  | "notifications";
+  | "notifications"
+  | "licensing";
 
 const Index = () => {
   const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
   const [currentView, setCurrentView] = useState<CurrentView>("dashboard");
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleRoleSelect = (role: UserRole) => {
+  const handleLogin = (role: UserRole) => {
     setCurrentRole(role);
     setCurrentView("dashboard");
+    setIsAuthenticated(true);
+  };
+
+  const handleSignup = (role: UserRole) => {
+    setCurrentRole(role);
+    setCurrentView("dashboard");
+    setIsAuthenticated(true);
   };
 
   const handleLogout = () => {
     setCurrentRole(null);
     setCurrentView("dashboard");
+    setIsAuthenticated(false);
   };
 
   const handleViewChange = (view: CurrentView) => {
@@ -62,6 +79,8 @@ const Index = () => {
   const renderContent = () => {
     if (currentView === "settings") return <Settings />;
     if (currentView === "notifications") return <Notifications />;
+    if (currentView === "licensing") return <LicensingPage />;
+    if (currentView === "report-templates") return <ReportTemplateBuilder />;
 
     switch (currentRole) {
       case "lab-technician":
@@ -70,6 +89,7 @@ const Index = () => {
           case "sample-intake": return <SampleIntake />;
           case "sample-tracking": return <SampleTracking />;
           case "result-entry": return <ResultEntry />;
+          case "report-generator": return <ReportGenerator />;
           case "inventory": return <InventoryManagement />;
           case "equipment": return <EquipmentTracking />;
           default: return <LabTechnicianDashboard onViewChange={handleViewChange} />;
@@ -78,6 +98,7 @@ const Index = () => {
         switch (currentView) {
           case "request-test": return <RequestTest />;
           case "review-results": return <ReviewResults />;
+          case "commission": return <CommissionPage />;
           default: return <DoctorDashboard onViewChange={handleViewChange} />;
         }
       case "patient":
@@ -97,14 +118,27 @@ const Index = () => {
     }
   };
 
-  if (!currentRole) {
-    return <LandingPage onRoleSelect={handleRoleSelect} />;
+  if (!isAuthenticated) {
+    if (authMode === "signup") {
+      return (
+        <SignupForm 
+          onSignup={handleSignup}
+          onShowLogin={() => setAuthMode("login")}
+        />
+      );
+    }
+    return (
+      <LoginForm 
+        onLogin={handleLogin}
+        onShowSignup={() => setAuthMode("signup")}
+      />
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation 
-        currentRole={currentRole} 
+        currentRole={currentRole!} 
         onLogout={handleLogout}
         onViewChange={handleViewChange}
         currentView={currentView}

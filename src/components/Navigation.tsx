@@ -7,7 +7,8 @@ import {
   LogOut, 
   Settings, 
   Bell,
-  Home
+  Home,
+  CreditCard
 } from "lucide-react";
 
 interface NavigationProps {
@@ -58,6 +59,15 @@ const Navigation = ({ currentRole, onLogout, onViewChange, currentView }: Naviga
         </div>
 
         <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => onViewChange("licensing")}
+            className={currentView === "licensing" ? "bg-gray-100" : ""}
+          >
+            <CreditCard className="w-4 h-4 mr-2" />
+            Licensing
+          </Button>
           <Button 
             variant="ghost" 
             size="sm" 

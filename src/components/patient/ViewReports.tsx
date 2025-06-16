@@ -1,14 +1,15 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, Download, Eye, FileText, Calendar } from "lucide-react";
+import { Search, Download, Eye, FileText, Calendar, Printer, Share } from "lucide-react";
 
 const ViewReports = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   const reports = [
     {
@@ -69,9 +70,40 @@ const ViewReports = () => {
     report.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDownload = (reportId: string) => {
-    console.log("Downloading report:", reportId);
-    alert("Report download started!");
+  const handleDownload = async (reportId: string) => {
+    setIsDownloading(true);
+    
+    // Simulate PDF generation and download
+    setTimeout(() => {
+      console.log("Downloading report:", reportId);
+      
+      // Create a fake download
+      const link = document.createElement('a');
+      link.href = 'data:application/pdf;base64,JVBERi0xLjQKJdP0zOEKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCgoyIDAgb2JqCjw8Ci9UeXBlIC9QYWdlcwo+PgplbmRvYmoKCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDc0IDAwMDAwIG4gCjAwMDAwMDAxMjMgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSA0Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgoxNzgKJSVFT0Y=';
+      link.download = `report-${reportId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      setIsDownloading(false);
+      alert("Report downloaded successfully!");
+    }, 2000);
+  };
+
+  const handlePrint = (reportId: string) => {
+    console.log("Printing report:", reportId);
+    window.print();
+  };
+
+  const handleShareWithDoctor = async (reportId: string) => {
+    setIsSharing(true);
+    
+    // Simulate sharing process
+    setTimeout(() => {
+      console.log("Sharing report with doctor:", reportId);
+      setIsSharing(false);
+      alert("Report shared with your doctor successfully!");
+    }, 1500);
   };
 
   const getStatusColor = (status: string) => {
@@ -136,13 +168,23 @@ const ViewReports = () => {
                         View
                       </Button>
                       {report.status === "completed" && (
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => handleDownload(report.id)}
-                        >
-                          <Download className="w-3 h-3" />
-                        </Button>
+                        <>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleDownload(report.id)}
+                            disabled={isDownloading}
+                          >
+                            <Download className="w-3 h-3" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handlePrint(report.id)}
+                          >
+                            <Printer className="w-3 h-3" />
+                          </Button>
+                        </>
                       )}
                     </div>
                   </div>
@@ -196,16 +238,28 @@ const ViewReports = () => {
                     </div>
                   )}
 
-                  <div className="flex space-x-2">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <Button 
-                      className="flex-1"
                       onClick={() => handleDownload(selectedReport.id)}
+                      disabled={isDownloading}
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      Download PDF
+                      {isDownloading ? "Downloading..." : "Download PDF"}
                     </Button>
-                    <Button variant="outline" className="flex-1">
-                      Share with Doctor
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handlePrint(selectedReport.id)}
+                    >
+                      <Printer className="w-4 h-4 mr-2" />
+                      Print
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleShareWithDoctor(selectedReport.id)}
+                      disabled={isSharing}
+                    >
+                      <Share className="w-4 h-4 mr-2" />
+                      {isSharing ? "Sharing..." : "Share with Doctor"}
                     </Button>
                   </div>
                 </>
