@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { CurrentView } from "@/pages/Index";
 import { 
   Users, 
   FileText, 
@@ -13,7 +14,11 @@ import {
   Eye
 } from "lucide-react";
 
-const DoctorDashboard = () => {
+interface DoctorDashboardProps {
+  onViewChange: (view: CurrentView) => void;
+}
+
+const DoctorDashboard = ({ onViewChange }: DoctorDashboardProps) => {
   const stats = [
     { label: "Total Patients", value: "156", icon: Users, color: "text-blue-500" },
     { label: "Pending Reports", value: "12", icon: FileText, color: "text-orange-500" },
@@ -29,12 +34,12 @@ const DoctorDashboard = () => {
   ];
 
   const quickActions = [
-    { title: "Request Test", description: "Order new lab tests", icon: Plus },
-    { title: "View Reports", description: "Review test results", icon: FileText },
-    { title: "Patient History", description: "Access patient records", icon: Users },
-    { title: "Schedule Appointment", description: "Book patient visits", icon: Calendar },
-    { title: "Generate Report", description: "Create custom reports", icon: Download },
-    { title: "Critical Alerts", description: "View urgent results", icon: TrendingUp }
+    { title: "Request Test", description: "Order new lab tests", icon: Plus, view: "request-test" as CurrentView },
+    { title: "View Reports", description: "Review test results", icon: FileText, view: "review-results" as CurrentView },
+    { title: "Patient History", description: "Access patient records", icon: Users, view: "dashboard" as CurrentView },
+    { title: "Schedule Appointment", description: "Book patient visits", icon: Calendar, view: "dashboard" as CurrentView },
+    { title: "Generate Report", description: "Create custom reports", icon: Download, view: "dashboard" as CurrentView },
+    { title: "Critical Alerts", description: "View urgent results", icon: TrendingUp, view: "review-results" as CurrentView }
   ];
 
   return (
@@ -44,7 +49,10 @@ const DoctorDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900">Doctor Dashboard</h1>
           <p className="text-gray-600">Review patient results and manage care</p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button 
+          className="flex items-center gap-2"
+          onClick={() => onViewChange("request-test")}
+        >
           <Plus className="w-4 h-4" />
           Request Test
         </Button>
@@ -83,6 +91,7 @@ const DoctorDashboard = () => {
                   key={action.title}
                   variant="outline"
                   className="h-auto p-4 flex flex-col items-center space-y-2"
+                  onClick={() => onViewChange(action.view)}
                 >
                   <IconComponent className="w-6 h-6" />
                   <div className="text-center">
@@ -128,7 +137,11 @@ const DoctorDashboard = () => {
                   >
                     {report.status}
                   </Badge>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => onViewChange("review-results")}
+                  >
                     <Eye className="w-4 h-4 mr-1" />
                     Review
                   </Button>

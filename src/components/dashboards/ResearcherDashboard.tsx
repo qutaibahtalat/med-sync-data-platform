@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { CurrentView } from "@/pages/Index";
 import { 
   Database, 
   BarChart3, 
@@ -11,7 +12,11 @@ import {
   FlaskConical
 } from "lucide-react";
 
-const ResearcherDashboard = () => {
+interface ResearcherDashboardProps {
+  onViewChange: (view: CurrentView) => void;
+}
+
+const ResearcherDashboard = ({ onViewChange }: ResearcherDashboardProps) => {
   const stats = [
     { label: "Available Datasets", value: "1,245", icon: Database, color: "text-blue-500" },
     { label: "Active Studies", value: "8", icon: FileSearch, color: "text-green-500" },
@@ -33,7 +38,10 @@ const ResearcherDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900">Research Dashboard</h1>
           <p className="text-gray-600">Access anonymized data and manage research studies</p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button 
+          className="flex items-center gap-2"
+          onClick={() => onViewChange("new-study")}
+        >
           <Plus className="w-4 h-4" />
           New Study
         </Button>
@@ -91,7 +99,11 @@ const ResearcherDashboard = () => {
                   <div className="text-sm text-gray-600">
                     {study.completion} complete
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => onViewChange("study-data")}
+                  >
                     View Data
                   </Button>
                 </div>

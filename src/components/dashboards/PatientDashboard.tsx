@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { CurrentView } from "@/pages/Index";
 import { 
   FileText, 
   Download, 
@@ -11,7 +12,11 @@ import {
   Users
 } from "lucide-react";
 
-const PatientDashboard = () => {
+interface PatientDashboardProps {
+  onViewChange: (view: CurrentView) => void;
+}
+
+const PatientDashboard = ({ onViewChange }: PatientDashboardProps) => {
   const stats = [
     { label: "Total Tests", value: "24", icon: FileText, color: "text-blue-500" },
     { label: "Pending Results", value: "2", icon: Clock, color: "text-orange-500" },
@@ -33,7 +38,11 @@ const PatientDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900">My Health Dashboard</h1>
           <p className="text-gray-600">Track your test results and health status</p>
         </div>
-        <Button className="flex items-center gap-2" variant="outline">
+        <Button 
+          className="flex items-center gap-2" 
+          variant="outline"
+          onClick={() => onViewChange("book-appointment")}
+        >
           <Calendar className="w-4 h-4" />
           Book Appointment
         </Button>
@@ -94,7 +103,12 @@ const PatientDashboard = () => {
                     {test.result}
                   </Badge>
                   {test.status === "completed" && (
-                    <Button variant="outline" size="sm" className="flex items-center gap-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center gap-1"
+                      onClick={() => onViewChange("view-reports")}
+                    >
                       <Download className="w-3 h-3" />
                       Download
                     </Button>

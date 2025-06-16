@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { CurrentView } from "@/pages/Index";
 import { 
   TestTube, 
   Clock, 
@@ -14,7 +15,11 @@ import {
   Wrench
 } from "lucide-react";
 
-const LabTechnicianDashboard = () => {
+interface LabTechnicianDashboardProps {
+  onViewChange: (view: CurrentView) => void;
+}
+
+const LabTechnicianDashboard = ({ onViewChange }: LabTechnicianDashboardProps) => {
   const stats = [
     { label: "Pending Tests", value: "23", icon: Clock, color: "text-orange-500" },
     { label: "In Progress", value: "8", icon: TestTube, color: "text-blue-500" },
@@ -30,12 +35,12 @@ const LabTechnicianDashboard = () => {
   ];
 
   const quickActions = [
-    { title: "Sample Intake", description: "Register new samples", icon: Plus },
-    { title: "Test Catalog", description: "View available tests", icon: TestTube },
-    { title: "Sample Tracking", description: "Track sample progress", icon: Microscope },
-    { title: "Result Entry", description: "Enter test results", icon: FileText },
-    { title: "Inventory", description: "Manage supplies", icon: Package },
-    { title: "Equipment", description: "Monitor equipment", icon: Wrench }
+    { title: "Sample Intake", description: "Register new samples", icon: Plus, view: "sample-intake" as CurrentView },
+    { title: "Test Catalog", description: "View available tests", icon: TestTube, view: "test-catalog" as CurrentView },
+    { title: "Sample Tracking", description: "Track sample progress", icon: Microscope, view: "sample-tracking" as CurrentView },
+    { title: "Result Entry", description: "Enter test results", icon: FileText, view: "result-entry" as CurrentView },
+    { title: "Inventory", description: "Manage supplies", icon: Package, view: "inventory" as CurrentView },
+    { title: "Equipment", description: "Monitor equipment", icon: Wrench, view: "equipment" as CurrentView }
   ];
 
   return (
@@ -45,7 +50,10 @@ const LabTechnicianDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900">Lab Technician Dashboard</h1>
           <p className="text-gray-600">Manage samples, tests, and results</p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button 
+          className="flex items-center gap-2"
+          onClick={() => onViewChange("sample-intake")}
+        >
           <Plus className="w-4 h-4" />
           New Sample
         </Button>
@@ -84,6 +92,7 @@ const LabTechnicianDashboard = () => {
                   key={action.title}
                   variant="outline"
                   className="h-auto p-4 flex flex-col items-center space-y-2"
+                  onClick={() => onViewChange(action.view)}
                 >
                   <IconComponent className="w-6 h-6" />
                   <div className="text-center">
@@ -133,7 +142,11 @@ const LabTechnicianDashboard = () => {
                   >
                     {sample.status}
                   </Badge>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => onViewChange("sample-tracking")}
+                  >
                     View Details
                   </Button>
                 </div>

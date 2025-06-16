@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UserRole } from "@/types/user";
+import { CurrentView } from "@/pages/Index";
 import { 
   LogOut, 
   Settings, 
@@ -12,9 +13,11 @@ import {
 interface NavigationProps {
   currentRole: UserRole;
   onLogout: () => void;
+  onViewChange: (view: CurrentView) => void;
+  currentView: CurrentView;
 }
 
-const Navigation = ({ currentRole, onLogout }: NavigationProps) => {
+const Navigation = ({ currentRole, onLogout, onViewChange, currentView }: NavigationProps) => {
   const getRoleColor = (role: UserRole) => {
     switch (role) {
       case "lab-technician": return "bg-blue-500";
@@ -40,8 +43,14 @@ const Navigation = ({ currentRole, onLogout }: NavigationProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <Home className="w-6 h-6 text-gray-600" />
-            <h2 className="text-xl font-semibold text-gray-900">MedSync LMS</h2>
+            <Button 
+              variant="ghost" 
+              onClick={() => onViewChange("dashboard")}
+              className="flex items-center space-x-2"
+            >
+              <Home className="w-6 h-6 text-gray-600" />
+              <h2 className="text-xl font-semibold text-gray-900">MedSync LMS</h2>
+            </Button>
           </div>
           <Badge className={`${getRoleColor(currentRole)} text-white`}>
             {getRoleDisplayName(currentRole)}
@@ -49,10 +58,20 @@ const Navigation = ({ currentRole, onLogout }: NavigationProps) => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="sm">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => onViewChange("notifications")}
+            className={currentView === "notifications" ? "bg-gray-100" : ""}
+          >
             <Bell className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => onViewChange("settings")}
+            className={currentView === "settings" ? "bg-gray-100" : ""}
+          >
             <Settings className="w-4 h-4" />
           </Button>
           <Button variant="outline" size="sm" onClick={onLogout}>
