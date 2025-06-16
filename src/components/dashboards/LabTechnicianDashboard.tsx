@@ -8,7 +8,10 @@ import {
   CheckCircle, 
   AlertTriangle, 
   Plus,
-  Microscope
+  Microscope,
+  FileText,
+  Package,
+  Wrench
 } from "lucide-react";
 
 const LabTechnicianDashboard = () => {
@@ -24,6 +27,15 @@ const LabTechnicianDashboard = () => {
     { id: "S002", patient: "Jane Smith", test: "Complete Blood Count", status: "in-progress", priority: "urgent" },
     { id: "S003", patient: "Bob Johnson", test: "Lipid Panel", status: "completed", priority: "normal" },
     { id: "S004", patient: "Alice Brown", test: "Glucose Test", status: "pending", priority: "high" },
+  ];
+
+  const quickActions = [
+    { title: "Sample Intake", description: "Register new samples", icon: Plus },
+    { title: "Test Catalog", description: "View available tests", icon: TestTube },
+    { title: "Sample Tracking", description: "Track sample progress", icon: Microscope },
+    { title: "Result Entry", description: "Enter test results", icon: FileText },
+    { title: "Inventory", description: "Manage supplies", icon: Package },
+    { title: "Equipment", description: "Monitor equipment", icon: Wrench }
   ];
 
   return (
@@ -56,6 +68,34 @@ const LabTechnicianDashboard = () => {
           );
         })}
       </div>
+
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+          <CardDescription>Common laboratory tasks</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {quickActions.map((action) => {
+              const IconComponent = action.icon;
+              return (
+                <Button
+                  key={action.title}
+                  variant="outline"
+                  className="h-auto p-4 flex flex-col items-center space-y-2"
+                >
+                  <IconComponent className="w-6 h-6" />
+                  <div className="text-center">
+                    <p className="font-medium">{action.title}</p>
+                    <p className="text-sm text-gray-600">{action.description}</p>
+                  </div>
+                </Button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Recent Samples */}
       <Card>

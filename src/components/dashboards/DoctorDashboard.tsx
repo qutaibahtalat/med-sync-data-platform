@@ -8,7 +8,9 @@ import {
   Calendar, 
   TrendingUp,
   Plus,
-  Stethoscope
+  Stethoscope,
+  Download,
+  Eye
 } from "lucide-react";
 
 const DoctorDashboard = () => {
@@ -24,6 +26,15 @@ const DoctorDashboard = () => {
     { id: "R002", patient: "Michael Wilson", test: "Thyroid Function", date: "2024-01-14", status: "abnormal" },
     { id: "R003", patient: "Sarah Connor", test: "Liver Function", date: "2024-01-13", status: "ready" },
     { id: "R004", patient: "David Lee", test: "Kidney Function", date: "2024-01-12", status: "critical" },
+  ];
+
+  const quickActions = [
+    { title: "Request Test", description: "Order new lab tests", icon: Plus },
+    { title: "View Reports", description: "Review test results", icon: FileText },
+    { title: "Patient History", description: "Access patient records", icon: Users },
+    { title: "Schedule Appointment", description: "Book patient visits", icon: Calendar },
+    { title: "Generate Report", description: "Create custom reports", icon: Download },
+    { title: "Critical Alerts", description: "View urgent results", icon: TrendingUp }
   ];
 
   return (
@@ -56,6 +67,34 @@ const DoctorDashboard = () => {
           );
         })}
       </div>
+
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+          <CardDescription>Common clinical tasks</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {quickActions.map((action) => {
+              const IconComponent = action.icon;
+              return (
+                <Button
+                  key={action.title}
+                  variant="outline"
+                  className="h-auto p-4 flex flex-col items-center space-y-2"
+                >
+                  <IconComponent className="w-6 h-6" />
+                  <div className="text-center">
+                    <p className="font-medium">{action.title}</p>
+                    <p className="text-sm text-gray-600">{action.description}</p>
+                  </div>
+                </Button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Pending Reports */}
       <Card>
@@ -90,6 +129,7 @@ const DoctorDashboard = () => {
                     {report.status}
                   </Badge>
                   <Button variant="outline" size="sm">
+                    <Eye className="w-4 h-4 mr-1" />
                     Review
                   </Button>
                 </div>
