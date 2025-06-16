@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, AlertTriangle, Info, CheckCircle, X, MarkAsRead } from "lucide-react";
+import { Bell, AlertTriangle, Info, CheckCircle, X, CheckCircle2 } from "lucide-react";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([
@@ -145,7 +145,7 @@ const Notifications = () => {
         </div>
         {unreadCount > 0 && (
           <Button onClick={markAllAsRead}>
-            <MarkAsRead className="w-4 h-4 mr-2" />
+            <CheckCircle2 className="w-4 h-4 mr-2" />
             Mark All as Read
           </Button>
         )}
