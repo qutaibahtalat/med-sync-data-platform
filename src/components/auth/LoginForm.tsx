@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { UserRole } from "@/types/user";
-import { Eye, EyeOff, User, Lock } from "lucide-react";
+import { Eye, EyeOff, User, Lock, Mail, Shield, Stethoscope, Microscope, FlaskConical } from "lucide-react";
 
 interface LoginFormProps {
   onLogin: (role: UserRole) => void;
@@ -22,59 +22,108 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
   });
 
   const roles = [
-    { value: "lab-technician" as UserRole, label: "Lab Technician", color: "bg-blue-500" },
-    { value: "doctor" as UserRole, label: "Doctor", color: "bg-green-500" },
-    { value: "patient" as UserRole, label: "Patient", color: "bg-purple-500" },
-    { value: "researcher" as UserRole, label: "Researcher", color: "bg-orange-500" }
+    { 
+      value: "lab-technician" as UserRole, 
+      label: "Lab Technician", 
+      color: "bg-gradient-to-r from-blue-500 to-blue-600",
+      icon: Microscope,
+      description: "Manage samples & tests"
+    },
+    { 
+      value: "doctor" as UserRole, 
+      label: "Doctor", 
+      color: "bg-gradient-to-r from-green-500 to-green-600",
+      icon: Stethoscope,
+      description: "Request tests & review results"
+    },
+    { 
+      value: "patient" as UserRole, 
+      label: "Patient", 
+      color: "bg-gradient-to-r from-purple-500 to-purple-600",
+      icon: User,
+      description: "View reports & book appointments"
+    },
+    { 
+      value: "researcher" as UserRole, 
+      label: "Researcher", 
+      color: "bg-gradient-to-r from-orange-500 to-orange-600",
+      icon: FlaskConical,
+      description: "Conduct studies & analyze data"
+    }
   ];
 
   const handleLogin = () => {
-    // Mock authentication - in real app would validate credentials
     if (credentials.email && credentials.password) {
       onLogin(selectedRole);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">MedSync LMS</CardTitle>
-          <CardDescription>Login to your account</CardDescription>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute top-40 left-40 w-60 h-60 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+      </div>
+
+      <Card className="w-full max-w-md relative z-10 backdrop-blur-sm bg-white/95 shadow-2xl border-0">
+        <CardHeader className="text-center space-y-4 pb-6">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-2">
+            <Shield className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              MedSync LMS
+            </CardTitle>
+            <CardDescription className="text-lg text-gray-600 mt-2">
+              Advanced Laboratory Management System
+            </CardDescription>
+          </div>
         </CardHeader>
+        
         <CardContent className="space-y-6">
           {/* Role Selection */}
-          <div className="space-y-3">
-            <Label>Select Role</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {roles.map((role) => (
-                <Button
-                  key={role.value}
-                  variant={selectedRole === role.value ? "default" : "outline"}
-                  className="p-3 h-auto"
-                  onClick={() => setSelectedRole(role.value)}
-                >
-                  <div className="text-center">
-                    <Badge className={`${role.color} text-white mb-1`}>
-                      {role.label}
-                    </Badge>
-                  </div>
-                </Button>
-              ))}
+          <div className="space-y-4">
+            <Label className="text-base font-semibold">Select Your Role</Label>
+            <div className="grid grid-cols-2 gap-3">
+              {roles.map((role) => {
+                const IconComponent = role.icon;
+                return (
+                  <Button
+                    key={role.value}
+                    variant="outline"
+                    className={`p-4 h-auto border-2 transition-all duration-300 ${
+                      selectedRole === role.value
+                        ? `${role.color} text-white border-transparent shadow-lg scale-105`
+                        : "hover:border-gray-300 hover:shadow-md"
+                    }`}
+                    onClick={() => setSelectedRole(role.value)}
+                  >
+                    <div className="text-center space-y-2">
+                      <IconComponent className="w-6 h-6 mx-auto" />
+                      <div>
+                        <p className="font-medium text-sm">{role.label}</p>
+                        <p className="text-xs opacity-80">{role.description}</p>
+                      </div>
+                    </div>
+                  </Button>
+                );
+              })}
             </div>
           </div>
 
           {/* Login Form */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="Enter your email"
-                  className="pl-10"
+                  className="pl-10 h-12 border-2 focus:border-blue-500 transition-colors"
                   value={credentials.email}
                   onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                 />
@@ -82,14 +131,14 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  className="pl-10 pr-10"
+                  className="pl-10 pr-12 h-12 border-2 focus:border-blue-500 transition-colors"
                   value={credentials.password}
                   onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                 />
@@ -97,7 +146,7 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3"
+                  className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -107,30 +156,51 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
           </div>
 
           <Button 
-            className="w-full" 
+            className={`w-full h-12 text-base font-semibold ${
+              roles.find(r => r.value === selectedRole)?.color
+            } hover:opacity-90 transition-all duration-300 shadow-lg`}
             onClick={handleLogin}
             disabled={!credentials.email || !credentials.password}
           >
             Login as {roles.find(r => r.value === selectedRole)?.label}
           </Button>
 
-          <div className="text-center space-y-2">
-            <Button variant="link" size="sm">
-              Forgot Password?
-            </Button>
-            <div className="text-sm text-gray-600">
-              Don't have an account?{" "}
-              <Button variant="link" size="sm" onClick={onShowSignup}>
-                Sign up
+          <div className="space-y-3">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500">or</span>
+              </div>
+            </div>
+            
+            <div className="flex flex-col space-y-2 text-center">
+              <Button variant="link" size="sm" className="text-blue-600 hover:text-blue-800">
+                Forgot Password?
               </Button>
+              <div className="text-sm text-gray-600">
+                Don't have an account?{" "}
+                <Button 
+                  variant="link" 
+                  size="sm" 
+                  onClick={onShowSignup}
+                  className="text-blue-600 hover:text-blue-800 p-0 h-auto font-semibold"
+                >
+                  Sign up here
+                </Button>
+              </div>
             </div>
           </div>
 
-          <div className="text-xs text-center text-gray-500 mt-4">
-            Powered by{" "}
-            <a href="https://mindspire.org" className="text-blue-600 hover:text-blue-800">
-              mindspire.org
-            </a>
+          <div className="text-xs text-center text-gray-500 pt-4 border-t">
+            <p className="mb-1">© 2024 MedSync Laboratory Management System</p>
+            <p>
+              Powered by{" "}
+              <a href="https://mindspire.org" className="text-blue-600 hover:text-blue-800 font-medium">
+                mindspire.org
+              </a>
+            </p>
           </div>
         </CardContent>
       </Card>
