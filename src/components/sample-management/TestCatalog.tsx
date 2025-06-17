@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -74,7 +75,7 @@ const TestCatalog = () => {
     duration: 0,
     price: 0,
     requiresSpecialPrep: false,
-    sampleType: "blood" as const
+    sampleType: "blood" as "blood" | "urine" | "saliva" | "tissue" | "other"
   });
   
   const { toast } = useToast();

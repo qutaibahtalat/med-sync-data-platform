@@ -27,6 +27,7 @@ import NewStudy from "@/components/researcher/NewStudy";
 import StudyData from "@/components/researcher/StudyData";
 import Settings from "@/components/common/Settings";
 import Notifications from "@/components/common/Notifications";
+import FinanceDashboard from "@/components/finance/FinanceDashboard";
 
 export type CurrentView = 
   | "dashboard" 
@@ -48,7 +49,8 @@ export type CurrentView =
   | "study-data"
   | "settings" 
   | "notifications"
-  | "licensing";
+  | "licensing"
+  | "finance";
 
 const Index = () => {
   const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
@@ -84,6 +86,7 @@ const Index = () => {
     if (currentView === "licensing") return <LicensingPage />;
     if (currentView === "report-templates") return <ReportTemplateBuilder />;
     if (currentView === "advanced-templates") return <AdvancedReportTemplates />;
+    if (currentView === "finance") return <FinanceDashboard />;
 
     switch (currentRole) {
       case "lab-technician":
