@@ -15,6 +15,7 @@ import SampleTracking from "@/components/sample-management/SampleTracking";
 import ResultEntry from "@/components/results/ResultEntry";
 import ReportGenerator from "@/components/results/ReportGenerator";
 import ReportTemplateBuilder from "@/components/reports/ReportTemplateBuilder";
+import AdvancedReportTemplates from "@/components/reports/AdvancedReportTemplates";
 import InventoryManagement from "@/components/inventory/InventoryManagement";
 import EquipmentTracking from "@/components/inventory/EquipmentTracking";
 import RequestTest from "@/components/doctor/RequestTest";
@@ -35,6 +36,7 @@ export type CurrentView =
   | "result-entry" 
   | "report-generator"
   | "report-templates"
+  | "advanced-templates"
   | "inventory" 
   | "equipment" 
   | "request-test" 
@@ -81,6 +83,7 @@ const Index = () => {
     if (currentView === "notifications") return <Notifications />;
     if (currentView === "licensing") return <LicensingPage />;
     if (currentView === "report-templates") return <ReportTemplateBuilder />;
+    if (currentView === "advanced-templates") return <AdvancedReportTemplates />;
 
     switch (currentRole) {
       case "lab-technician":

@@ -4,113 +4,313 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Bell, Shield, Palette, Save } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Settings as SettingsIcon, 
+  Building, 
+  DollarSign, 
+  Globe, 
+  Bell, 
+  Shield,
+  Save,
+  ArrowLeft
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
-  const [userSettings, setUserSettings] = useState({
-    name: "Dr. John Smith",
-    email: "john.smith@hospital.com",
-    phone: "+1 (555) 123-4567",
-    department: "Cardiology",
-    notifications: {
-      email: true,
-      sms: false,
-      push: true,
-      critical: true
-    },
-    privacy: {
-      shareData: false,
-      analytics: true,
-      marketing: false
-    },
-    appearance: {
-      theme: "light",
-      language: "english",
-      timezone: "UTC-5"
-    }
+  const [labSettings, setLabSettings] = useState({
+    labName: "MedSync Laboratory",
+    address: "Block A, Gulberg III, Lahore",
+    phone: "+92 42 123 4567",
+    email: "info@medsynclab.com",
+    website: "www.medsynclab.com",
+    license: "LAB-PK-2024-001",
+    currency: "PKR",
+    timezone: "Asia/Karachi",
+    defaultLanguage: "English"
   });
 
-  const handleSave = () => {
-    console.log("Settings saved:", userSettings);
-    alert("Settings saved successfully!");
+  const [pricingSettings, setPricingSettings] = useState({
+    defaultCurrency: "PKR",
+    taxRate: 17, // GST in Pakistan
+    discountThreshold: 10000,
+    bulkDiscountRate: 10,
+    emergencyCharges: 500,
+    homeCollectionCharges: 300
+  });
+
+  const [notificationSettings, setNotificationSettings] = useState({
+    emailNotifications: true,
+    smsNotifications: true,
+    criticalAlerts: true,
+    reportReady: true,
+    appointmentReminders: true,
+    systemMaintenance: false
+  });
+
+  const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
+
+  const currencies = [
+    { code: "PKR", name: "Pakistani Rupee", symbol: "₨" },
+    { code: "USD", name: "US Dollar", symbol: "$" },
+    { code: "EUR", name: "Euro", symbol: "€" },
+    { code: "GBP", name: "British Pound", symbol: "£" }
+  ];
+
+  const handleSaveSettings = async () => {
+    setIsSaving(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const settings = {
+        lab: labSettings,
+        pricing: pricingSettings,
+        notifications: notificationSettings,
+        updatedAt: new Date()
+      };
+      
+      console.log("Settings saved:", settings);
+      
+      toast({
+        title: "Settings Saved",
+        description: "All settings have been updated successfully.",
+      });
+      
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save settings. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600">Manage your account and preferences</p>
+        <div className="flex items-center space-x-4">
+          <Button variant="outline" size="sm" onClick={() => window.history.back()}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+            <p className="text-gray-600">Manage laboratory configuration and preferences</p>
+          </div>
         </div>
-        <Button onClick={handleSave}>
+        <Button onClick={handleSaveSettings} disabled={isSaving}>
           <Save className="w-4 h-4 mr-2" />
-          Save Changes
+          {isSaving ? "Saving..." : "Save All Settings"}
         </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Profile Settings */}
+        {/* Laboratory Information */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
-              Profile Information
+              <Building className="w-5 h-5" />
+              Laboratory Information
             </CardTitle>
-            <CardDescription>Update your personal information</CardDescription>
+            <CardDescription>Basic laboratory details and contact information</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="labName">Laboratory Name</Label>
               <Input
-                id="name"
-                value={userSettings.name}
-                onChange={(e) => setUserSettings({
-                  ...userSettings,
-                  name: e.target.value
-                })}
+                id="labName"
+                value={labSettings.labName}
+                onChange={(e) => setLabSettings({...labSettings, labName: e.target.value})}
               />
             </div>
+            
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={userSettings.email}
-                onChange={(e) => setUserSettings({
-                  ...userSettings,
-                  email: e.target.value
-                })}
+              <Label htmlFor="address">Address</Label>
+              <textarea
+                id="address"
+                className="w-full p-3 border rounded-md resize-none"
+                rows={3}
+                value={labSettings.address}
+                onChange={(e) => setLabSettings({...labSettings, address: e.target.value})}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                value={userSettings.phone}
-                onChange={(e) => setUserSettings({
-                  ...userSettings,
-                  phone: e.target.value
-                })}
-              />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={labSettings.phone}
+                  onChange={(e) => setLabSettings({...labSettings, phone: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={labSettings.email}
+                  onChange={(e) => setLabSettings({...labSettings, email: e.target.value})}
+                />
+              </div>
             </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="website">Website</Label>
+                <Input
+                  id="website"
+                  value={labSettings.website}
+                  onChange={(e) => setLabSettings({...labSettings, website: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="license">License Number</Label>
+                <Input
+                  id="license"
+                  value={labSettings.license}
+                  onChange={(e) => setLabSettings({...labSettings, license: e.target.value})}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Pricing Configuration */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Pricing Configuration
+            </CardTitle>
+            <CardDescription>Currency and pricing settings</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Select value={userSettings.department} onValueChange={(value) =>
-                setUserSettings({...userSettings, department: value})
-              }>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Cardiology">Cardiology</SelectItem>
-                  <SelectItem value="Internal Medicine">Internal Medicine</SelectItem>
-                  <SelectItem value="Endocrinology">Endocrinology</SelectItem>
-                  <SelectItem value="Laboratory">Laboratory</SelectItem>
-                  <SelectItem value="Research">Research</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="defaultCurrency">Default Currency</Label>
+              <select
+                id="defaultCurrency"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={pricingSettings.defaultCurrency}
+                onChange={(e) => setPricingSettings({...pricingSettings, defaultCurrency: e.target.value})}
+              >
+                {currencies.map((currency) => (
+                  <option key={currency.code} value={currency.code}>
+                    {currency.symbol} {currency.name} ({currency.code})
+                  </option>
+                ))}
+              </select>
+              <Badge className="bg-green-100 text-green-800">
+                Recommended: PKR for Pakistan
+              </Badge>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="taxRate">Tax Rate (%)</Label>
+                <Input
+                  id="taxRate"
+                  type="number"
+                  value={pricingSettings.taxRate}
+                  onChange={(e) => setPricingSettings({...pricingSettings, taxRate: parseFloat(e.target.value) || 0})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bulkDiscountRate">Bulk Discount (%)</Label>
+                <Input
+                  id="bulkDiscountRate"
+                  type="number"
+                  value={pricingSettings.bulkDiscountRate}
+                  onChange={(e) => setPricingSettings({...pricingSettings, bulkDiscountRate: parseFloat(e.target.value) || 0})}
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="discountThreshold">Discount Threshold (PKR)</Label>
+              <Input
+                id="discountThreshold"
+                type="number"
+                value={pricingSettings.discountThreshold}
+                onChange={(e) => setPricingSettings({...pricingSettings, discountThreshold: parseFloat(e.target.value) || 0})}
+              />
+              <p className="text-sm text-gray-600">Orders above this amount get bulk discount</p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="emergencyCharges">Emergency Charges (PKR)</Label>
+                <Input
+                  id="emergencyCharges"
+                  type="number"
+                  value={pricingSettings.emergencyCharges}
+                  onChange={(e) => setPricingSettings({...pricingSettings, emergencyCharges: parseFloat(e.target.value) || 0})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="homeCollectionCharges">Home Collection (PKR)</Label>
+                <Input
+                  id="homeCollectionCharges"
+                  type="number"
+                  value={pricingSettings.homeCollectionCharges}
+                  onChange={(e) => setPricingSettings({...pricingSettings, homeCollectionCharges: parseFloat(e.target.value) || 0})}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Regional Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="w-5 h-5" />
+              Regional Settings
+            </CardTitle>
+            <CardDescription>Timezone and language preferences</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="timezone">Timezone</Label>
+              <select
+                id="timezone"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={labSettings.timezone}
+                onChange={(e) => setLabSettings({...labSettings, timezone: e.target.value})}
+              >
+                <option value="Asia/Karachi">Asia/Karachi (PKT)</option>
+                <option value="UTC">UTC</option>
+                <option value="America/New_York">America/New_York (EST)</option>
+                <option value="Europe/London">Europe/London (GMT)</option>
+                <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+              </select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="defaultLanguage">Default Language</Label>
+              <select
+                id="defaultLanguage"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={labSettings.defaultLanguage}
+                onChange={(e) => setLabSettings({...labSettings, defaultLanguage: e.target.value})}
+              >
+                <option value="English">English</option>
+                <option value="Urdu">Urdu</option>
+                <option value="Arabic">Arabic</option>
+              </select>
+            </div>
+            
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <h4 className="font-medium text-blue-900 mb-2">Currency Display Format</h4>
+              <div className="space-y-1 text-sm text-blue-700">
+                <p>PKR 2,500.00 (Recommended for Pakistan)</p>
+                <p>₨ 2,500.00 (Symbol format)</p>
+                <p>2,500.00 PKR (Suffix format)</p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -120,199 +320,70 @@ const Settings = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bell className="w-5 h-5" />
-              Notification Preferences
+              Notification Settings
             </CardTitle>
-            <CardDescription>Choose how you want to be notified</CardDescription>
+            <CardDescription>Configure alert and notification preferences</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="email-notifications">Email Notifications</Label>
-                <p className="text-sm text-gray-600">Receive updates via email</p>
+            {Object.entries(notificationSettings).map(([key, value]) => (
+              <div key={key} className="flex items-center justify-between">
+                <div>
+                  <Label className="font-medium">
+                    {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  </Label>
+                  <p className="text-sm text-gray-600">
+                    {key === 'criticalAlerts' && 'Immediate alerts for critical test results'}
+                    {key === 'emailNotifications' && 'General email notifications'}
+                    {key === 'smsNotifications' && 'SMS alerts and updates'}
+                    {key === 'reportReady' && 'Notify when reports are ready'}
+                    {key === 'appointmentReminders' && 'Appointment reminder notifications'}
+                    {key === 'systemMaintenance' && 'System maintenance notifications'}
+                  </p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={value}
+                    onChange={(e) => setNotificationSettings({...notificationSettings, [key]: e.target.checked})}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
               </div>
-              <Switch
-                id="email-notifications"
-                checked={userSettings.notifications.email}
-                onCheckedChange={(checked) => setUserSettings({
-                  ...userSettings,
-                  notifications: {...userSettings.notifications, email: checked}
-                })}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="sms-notifications">SMS Notifications</Label>
-                <p className="text-sm text-gray-600">Receive updates via text</p>
-              </div>
-              <Switch
-                id="sms-notifications"
-                checked={userSettings.notifications.sms}
-                onCheckedChange={(checked) => setUserSettings({
-                  ...userSettings,
-                  notifications: {...userSettings.notifications, sms: checked}
-                })}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="push-notifications">Push Notifications</Label>
-                <p className="text-sm text-gray-600">Browser notifications</p>
-              </div>
-              <Switch
-                id="push-notifications"
-                checked={userSettings.notifications.push}
-                onCheckedChange={(checked) => setUserSettings({
-                  ...userSettings,
-                  notifications: {...userSettings.notifications, push: checked}
-                })}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="critical-notifications">Critical Alerts</Label>
-                <p className="text-sm text-gray-600">Urgent medical alerts</p>
-              </div>
-              <Switch
-                id="critical-notifications"
-                checked={userSettings.notifications.critical}
-                onCheckedChange={(checked) => setUserSettings({
-                  ...userSettings,
-                  notifications: {...userSettings.notifications, critical: checked}
-                })}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Privacy Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              Privacy & Security
-            </CardTitle>
-            <CardDescription>Control your data and privacy</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="share-data">Share Anonymized Data</Label>
-                <p className="text-sm text-gray-600">Help improve research</p>
-              </div>
-              <Switch
-                id="share-data"
-                checked={userSettings.privacy.shareData}
-                onCheckedChange={(checked) => setUserSettings({
-                  ...userSettings,
-                  privacy: {...userSettings.privacy, shareData: checked}
-                })}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="analytics">Usage Analytics</Label>
-                <p className="text-sm text-gray-600">Help improve the system</p>
-              </div>
-              <Switch
-                id="analytics"
-                checked={userSettings.privacy.analytics}
-                onCheckedChange={(checked) => setUserSettings({
-                  ...userSettings,
-                  privacy: {...userSettings.privacy, analytics: checked}
-                })}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="marketing">Marketing Communications</Label>
-                <p className="text-sm text-gray-600">Product updates and news</p>
-              </div>
-              <Switch
-                id="marketing"
-                checked={userSettings.privacy.marketing}
-                onCheckedChange={(checked) => setUserSettings({
-                  ...userSettings,
-                  privacy: {...userSettings.privacy, marketing: checked}
-                })}
-              />
-            </div>
-            <div className="pt-4">
-              <Button variant="outline" className="w-full">
-                Change Password
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Appearance Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Palette className="w-5 h-5" />
-              Appearance & Localization
-            </CardTitle>
-            <CardDescription>Customize your experience</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="theme">Theme</Label>
-              <Select value={userSettings.appearance.theme} onValueChange={(value) =>
-                setUserSettings({
-                  ...userSettings,
-                  appearance: {...userSettings.appearance, theme: value}
-                })
-              }>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Light</SelectItem>
-                  <SelectItem value="dark">Dark</SelectItem>
-                  <SelectItem value="auto">Auto</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="language">Language</Label>
-              <Select value={userSettings.appearance.language} onValueChange={(value) =>
-                setUserSettings({
-                  ...userSettings,
-                  appearance: {...userSettings.appearance, language: value}
-                })
-              }>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="english">English</SelectItem>
-                  <SelectItem value="spanish">Español</SelectItem>
-                  <SelectItem value="french">Français</SelectItem>
-                  <SelectItem value="german">Deutsch</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="timezone">Timezone</Label>
-              <Select value={userSettings.appearance.timezone} onValueChange={(value) =>
-                setUserSettings({
-                  ...userSettings,
-                  appearance: {...userSettings.appearance, timezone: value}
-                })
-              }>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="UTC-5">Eastern Time (UTC-5)</SelectItem>
-                  <SelectItem value="UTC-6">Central Time (UTC-6)</SelectItem>
-                  <SelectItem value="UTC-7">Mountain Time (UTC-7)</SelectItem>
-                  <SelectItem value="UTC-8">Pacific Time (UTC-8)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            ))}
           </CardContent>
         </Card>
       </div>
+
+      {/* System Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="w-5 h-5" />
+            System Information
+          </CardTitle>
+          <CardDescription>Current system status and version information</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <h4 className="font-medium text-gray-900">System Version</h4>
+              <p className="text-2xl font-bold text-blue-600">v2.1.0</p>
+              <p className="text-sm text-gray-600">Latest stable release</p>
+            </div>
+            <div className="text-center">
+              <h4 className="font-medium text-gray-900">Database Status</h4>
+              <Badge className="bg-green-100 text-green-800">Connected</Badge>
+              <p className="text-sm text-gray-600">All systems operational</p>
+            </div>
+            <div className="text-center">
+              <h4 className="font-medium text-gray-900">Last Backup</h4>
+              <p className="text-lg font-semibold text-green-600">2 hours ago</p>
+              <p className="text-sm text-gray-600">Auto-backup enabled</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
