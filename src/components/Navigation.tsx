@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { UserRole, CurrentView } from "@/pages/Index";
+import { UserRole } from "@/types/user";
+import { CurrentView } from "@/pages/Index";
 import { 
   Menu, 
   X, 

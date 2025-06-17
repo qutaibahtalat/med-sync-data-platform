@@ -1,16 +1,18 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { TestType } from "@/types/sample";
+import { labDataStore, Patient } from "@/store/labData";
 import { QrCode, User, Calendar, Clock, Camera, Check, ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const SampleIntake = () => {
   const [selectedTests, setSelectedTests] = useState<TestType[]>([]);
+  const [availableTests, setAvailableTests] = useState<TestType[]>([]);
   const [patientInfo, setPatientInfo] = useState({
     id: "",
     name: "",
@@ -22,60 +24,16 @@ const SampleIntake = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedSampleId, setSubmittedSampleId] = useState("");
   const { toast } = useToast();
 
-  const availableTests: TestType[] = [
-    {
-      id: "T001",
-      name: "Complete Blood Count",
-      category: "Hematology",
-      description: "Comprehensive blood analysis",
-      duration: 45,
-      price: 2500.00,
-      requiresSpecialPrep: false,
-      sampleType: "blood"
-    },
-    {
-      id: "T002",
-      name: "Lipid Panel",
-      category: "Chemistry",
-      description: "Cholesterol analysis",
-      duration: 60,
-      price: 3500.00,
-      requiresSpecialPrep: true,
-      sampleType: "blood"
-    },
-    {
-      id: "T003",
-      name: "Urinalysis",
-      category: "Urinalysis",
-      description: "Complete urine examination",
-      duration: 30,
-      price: 1500.00,
-      requiresSpecialPrep: false,
-      sampleType: "urine"
-    },
-    {
-      id: "T004",
-      name: "Thyroid Function Panel",
-      category: "Endocrinology",
-      description: "TSH, T3, T4 hormone levels",
-      duration: 90,
-      price: 4500.00,
-      requiresSpecialPrep: false,
-      sampleType: "blood"
-    },
-    {
-      id: "T005",
-      name: "Liver Function Tests",
-      category: "Chemistry",
-      description: "ALT, AST, Bilirubin analysis",
-      duration: 75,
-      price: 4000.00,
-      requiresSpecialPrep: false,
-      sampleType: "blood"
-    }
-  ];
+  useEffect(() => {
+    setAvailableTests(labDataStore.getTests());
+  }, []);
+
+  const handleBackButton = () => {
+    window.history.back();
+  };
 
   const generateBarcode = () => {
     return `SAM${Date.now().toString().slice(-8)}`;
@@ -131,19 +89,29 @@ const SampleIntake = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Add patient to store
+      const addedPatient = labDataStore.addPatient({
+        name: patientInfo.name,
+        phone: patientInfo.phone,
+        email: patientInfo.email,
+        age: patientInfo.age,
+        gender: patientInfo.gender,
+        address: patientInfo.address
+      });
+
+      // Add sample for each test
+      for (const test of selectedTests) {
+        const addedSample = labDataStore.addSample({
+          patientId: addedPatient.id,
+          patientName: addedPatient.name,
+          testType: test,
+          status: "received",
+          priority: "normal"
+        });
+        setSubmittedSampleId(addedSample.id);
+      }
       
-      const submissionData = {
-        patient: patientInfo,
-        tests: selectedTests,
-        barcode: generateBarcode(),
-        totalAmount: getTotalAmount(),
-        timestamp: new Date(),
-        status: "received"
-      };
-      
-      console.log("Sample intake submitted:", submissionData);
+      console.log("Sample intake submitted for patient:", addedPatient);
       
       toast({
         title: "Sample Submitted",
@@ -178,7 +146,7 @@ const SampleIntake = () => {
             <Check className="w-16 h-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-green-700 mb-2">Sample Submitted Successfully!</h2>
             <p className="text-gray-600 mb-4">
-              Sample ID: <span className="font-mono font-bold">{generateBarcode()}</span>
+              Sample ID: <span className="font-mono font-bold">{submittedSampleId}</span>
             </p>
             <p className="text-lg font-semibold text-blue-600 mb-2">
               Total Amount: PKR {getTotalAmount().toFixed(2)}
@@ -193,19 +161,19 @@ const SampleIntake = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <Button variant="outline" size="sm" onClick={() => window.history.back()}>
+          <Button variant="outline" size="sm" onClick={handleBackButton}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Sample Intake</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Sample Intake</h1>
             <p className="text-gray-600">Register new samples for testing</p>
           </div>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
           <Button variant="outline" className="flex items-center gap-2" onClick={handleBarcodeScanner}>
             <QrCode className="w-4 h-4" />
             Scan Barcode
@@ -228,7 +196,7 @@ const SampleIntake = () => {
             <CardDescription>Enter patient details</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="patientName">Full Name *</Label>
                 <Input
@@ -251,7 +219,7 @@ const SampleIntake = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="age">Age</Label>
                 <Input
@@ -321,7 +289,7 @@ const SampleIntake = () => {
                   <div>
                     <h4 className="font-medium">{test.name}</h4>
                     <p className="text-sm text-gray-600">{test.description}</p>
-                    <div className="flex items-center gap-4 mt-2 text-sm">
+                    <div className="flex flex-wrap items-center gap-4 mt-2 text-sm">
                       <div className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {test.duration}min
@@ -385,7 +353,7 @@ const SampleIntake = () => {
       {/* Submit Section */}
       <Card>
         <CardContent className="p-6">
-          <div className="flex justify-end space-x-4">
+          <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
             <Button 
               variant="outline" 
               disabled={isSubmitting}
@@ -401,7 +369,7 @@ const SampleIntake = () => {
             <Button 
               onClick={handleSubmit} 
               disabled={isSubmitting || !patientInfo.name || !patientInfo.phone || selectedTests.length === 0}
-              className="min-w-32"
+              className="min-w-fit"
             >
               {isSubmitting ? "Submitting..." : `Submit Sample (PKR ${getTotalAmount().toFixed(2)})`}
             </Button>

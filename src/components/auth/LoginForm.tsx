@@ -59,7 +59,7 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -67,22 +67,22 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
         <div className="absolute top-40 left-40 w-60 h-60 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
       </div>
 
-      <Card className="w-full max-w-md relative z-10 backdrop-blur-sm bg-white/95 shadow-2xl border-0">
-        <CardHeader className="text-center space-y-4 pb-6">
+      <Card className="w-full max-w-lg relative z-10 backdrop-blur-sm bg-white/95 shadow-2xl border-0 max-h-[95vh] overflow-y-auto">
+        <CardHeader className="text-center space-y-4 pb-6 px-6">
           <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-2">
             <Shield className="w-8 h-8 text-white" />
           </div>
-          <div>
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="space-y-2">
+            <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               MedSync LMS
             </CardTitle>
-            <CardDescription className="text-lg text-gray-600 mt-2">
+            <CardDescription className="text-base sm:text-lg text-gray-600">
               Advanced Laboratory Management System
             </CardDescription>
           </div>
         </CardHeader>
         
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 px-6 pb-6">
           {/* Role Selection */}
           <div className="space-y-4">
             <Label className="text-base font-semibold">Select Your Role</Label>
@@ -93,18 +93,18 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
                   <Button
                     key={role.value}
                     variant="outline"
-                    className={`p-4 h-auto border-2 transition-all duration-300 ${
+                    className={`p-3 sm:p-4 h-auto border-2 transition-all duration-300 ${
                       selectedRole === role.value
                         ? `${role.color} text-white border-transparent shadow-lg scale-105`
                         : "hover:border-gray-300 hover:shadow-md"
                     }`}
                     onClick={() => setSelectedRole(role.value)}
                   >
-                    <div className="text-center space-y-2">
-                      <IconComponent className="w-6 h-6 mx-auto" />
-                      <div>
-                        <p className="font-medium text-sm">{role.label}</p>
-                        <p className="text-xs opacity-80">{role.description}</p>
+                    <div className="text-center space-y-1 sm:space-y-2">
+                      <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 mx-auto" />
+                      <div className="space-y-1">
+                        <p className="font-medium text-xs sm:text-sm leading-tight">{role.label}</p>
+                        <p className="text-[10px] sm:text-xs opacity-80 leading-tight">{role.description}</p>
                       </div>
                     </div>
                   </Button>
@@ -176,7 +176,7 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
             </div>
             
             <div className="flex flex-col space-y-2 text-center">
-              <Button variant="link" size="sm" className="text-blue-600 hover:text-blue-800">
+              <Button variant="link" size="sm" className="text-blue-600 hover:text-blue-800 text-sm">
                 Forgot Password?
               </Button>
               <div className="text-sm text-gray-600">
