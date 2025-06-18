@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,11 @@ import { labDataStore, StoredSample } from "@/store/labData";
 import { Search, Eye, Edit, MapPin, Printer, Download, ArrowLeft, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const SampleTracking = () => {
+interface SampleTrackingProps {
+  onNavigateBack?: () => void;
+}
+
+const SampleTracking = ({ onNavigateBack }: SampleTrackingProps) => {
   const [samples, setSamples] = useState<StoredSample[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -27,7 +30,11 @@ const SampleTracking = () => {
   };
 
   const handleBackButton = () => {
-    window.history.back();
+    if (onNavigateBack) {
+      onNavigateBack();
+    } else {
+      window.history.back();
+    }
   };
 
   const getStatusColor = (status: string) => {

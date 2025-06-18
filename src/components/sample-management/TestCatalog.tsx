@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,11 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const TestCatalog = () => {
+interface TestCatalogProps {
+  onNavigateBack?: () => void;
+}
+
+const TestCatalog = ({ onNavigateBack }: TestCatalogProps) => {
   const [tests, setTests] = useState<TestType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -42,7 +45,11 @@ const TestCatalog = () => {
   }, []);
 
   const handleBackButton = () => {
-    window.history.back();
+    if (onNavigateBack) {
+      onNavigateBack();
+    } else {
+      window.history.back();
+    }
   };
 
   const handleAddTest = () => {

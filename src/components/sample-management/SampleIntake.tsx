@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,11 @@ import { labDataStore, Patient } from "@/store/labData";
 import { QrCode, User, Calendar, Clock, Camera, Check, ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const SampleIntake = () => {
+interface SampleIntakeProps {
+  onNavigateBack?: () => void;
+}
+
+const SampleIntake = ({ onNavigateBack }: SampleIntakeProps) => {
   const [selectedTests, setSelectedTests] = useState<TestType[]>([]);
   const [availableTests, setAvailableTests] = useState<TestType[]>([]);
   const [patientInfo, setPatientInfo] = useState({
@@ -32,7 +35,11 @@ const SampleIntake = () => {
   }, []);
 
   const handleBackButton = () => {
-    window.history.back();
+    if (onNavigateBack) {
+      onNavigateBack();
+    } else {
+      window.history.back();
+    }
   };
 
   const generateBarcode = () => {

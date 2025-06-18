@@ -1,5 +1,5 @@
 
-import { TestType, Sample } from "@/types/sample";
+import { TestType, Sample, SampleResult } from "@/types/sample";
 import { ResultEntry } from "@/types/result";
 
 export interface Patient {
@@ -13,7 +13,7 @@ export interface Patient {
   createdAt: Date;
 }
 
-export interface StoredSample extends Sample {
+export interface StoredSample extends Omit<Sample, 'results'> {
   results?: ResultEntry[];
   notes?: string;
   updatedAt: Date;

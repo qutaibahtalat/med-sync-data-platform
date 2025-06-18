@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,7 +58,7 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 overflow-hidden min-h-screen w-full">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -67,16 +66,16 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
         <div className="absolute top-40 left-40 w-60 h-60 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
       </div>
 
-      <Card className="w-full max-w-lg relative z-10 backdrop-blur-sm bg-white/95 shadow-2xl border-0 max-h-[95vh] overflow-y-auto">
+      <Card className="w-full max-w-lg relative z-10 backdrop-blur-sm bg-white/95 shadow-2xl border-0 max-h-[95vh] overflow-y-auto mx-auto">
         <CardHeader className="text-center space-y-4 pb-6 px-6">
           <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-2">
             <Shield className="w-8 h-8 text-white" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent break-words">
               MedSync LMS
             </CardTitle>
-            <CardDescription className="text-base sm:text-lg text-gray-600">
+            <CardDescription className="text-base sm:text-lg text-gray-600 break-words px-2">
               Advanced Laboratory Management System
             </CardDescription>
           </div>
@@ -100,11 +99,11 @@ const LoginForm = ({ onLogin, onShowSignup }: LoginFormProps) => {
                     }`}
                     onClick={() => setSelectedRole(role.value)}
                   >
-                    <div className="text-center space-y-1 sm:space-y-2">
+                    <div className="text-center space-y-1 sm:space-y-2 w-full">
                       <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 mx-auto" />
                       <div className="space-y-1">
-                        <p className="font-medium text-xs sm:text-sm leading-tight">{role.label}</p>
-                        <p className="text-[10px] sm:text-xs opacity-80 leading-tight">{role.description}</p>
+                        <p className="font-medium text-xs sm:text-sm leading-tight break-words">{role.label}</p>
+                        <p className="text-[10px] sm:text-xs opacity-80 leading-tight break-words px-1">{role.description}</p>
                       </div>
                     </div>
                   </Button>

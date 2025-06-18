@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,11 @@ import { labDataStore, StoredSample } from "@/store/labData";
 import { AlertTriangle, CheckCircle, Save, Send, ArrowLeft, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const ResultEntry = () => {
+interface ResultEntryProps {
+  onNavigateBack?: () => void;
+}
+
+const ResultEntry = ({ onNavigateBack }: ResultEntryProps) => {
   const [samples, setSamples] = useState<StoredSample[]>([]);
   const [selectedSample, setSelectedSample] = useState<StoredSample | null>(null);
   const [results, setResults] = useState<ResultEntryType[]>([]);
@@ -71,7 +74,11 @@ const ResultEntry = () => {
   };
 
   const handleBackButton = () => {
-    window.history.back();
+    if (onNavigateBack) {
+      onNavigateBack();
+    } else {
+      window.history.back();
+    }
   };
 
   const filteredSamples = samples.filter(sample =>

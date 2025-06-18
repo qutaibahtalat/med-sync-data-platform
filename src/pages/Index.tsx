@@ -91,10 +91,10 @@ const Index = () => {
     switch (currentRole) {
       case "lab-technician":
         switch (currentView) {
-          case "test-catalog": return <TestCatalog />;
-          case "sample-intake": return <SampleIntake />;
-          case "sample-tracking": return <SampleTracking />;
-          case "result-entry": return <ResultEntry />;
+          case "test-catalog": return <TestCatalog onNavigateBack={() => setCurrentView("dashboard")} />;
+          case "sample-intake": return <SampleIntake onNavigateBack={() => setCurrentView("dashboard")} />;
+          case "sample-tracking": return <SampleTracking onNavigateBack={() => setCurrentView("dashboard")} />;
+          case "result-entry": return <ResultEntry onNavigateBack={() => setCurrentView("dashboard")} />;
           case "report-generator": return <ReportGenerator />;
           case "inventory": return <InventoryManagement />;
           case "equipment": return <EquipmentTracking />;
